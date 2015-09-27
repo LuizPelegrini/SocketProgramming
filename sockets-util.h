@@ -1,3 +1,6 @@
+#ifndef SOCKETS_UTIL_H
+#define SOCKETS_UTIL_H 
+
 #include <sys/socket.h>
 
 #ifndef MY_PORT
@@ -31,3 +34,5 @@ struct addrinfo* create_addrinfo(const int socktype, const char *ip, const char 
 	create_socket = utiliza a struct addrinfo para criar um socket, e ja dar bind() ou connect() nesse socket.
 */
 int create_socket(struct addrinfo *addrinfo, int (*function)(int, const struct sockaddr* , socklen_t));
+
+#endif
