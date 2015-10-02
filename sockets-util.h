@@ -4,11 +4,15 @@
 #include <sys/socket.h>
 
 #ifndef MY_PORT
-#define MY_PORT "42420"
+#define MY_PORT "42421"
 #endif
 
 #ifndef BUF_SIZE
 #define BUF_SIZE 100000
+#endif
+
+#ifndef QUEUE_SIZE
+#define QUEUE_SIZE 20
 #endif
 
 
@@ -32,13 +36,15 @@ void get_input(const int argc, const char *argv[], char **first, char **second);
 /*
 	create_addrinfo = cria uma estrutura que auxila na hora de criar sockets.
 */
-struct addrinfo* create_addrinfo(const int socktype, const char *ip, const char *port);
+struct addrinfo* _create_addrinfo(const int socktype, const char *ip, const char *port);
 
 
 /*
 	create_socket = utiliza a struct addrinfo para criar um socket, e ja dar bind() ou connect() nesse socket.
 */
-int create_socket(struct addrinfo *addrinfo, int (*function)(int, const struct sockaddr* , socklen_t));
+int _socket(struct addrinfo *addrinfo, int (*function)(int, const struct sockaddr* , socklen_t));
+
+int create_socket(int sock_type, const char *ip);
 
 
 size_t send_all(int socket, const char *msg);
