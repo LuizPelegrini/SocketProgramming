@@ -9,3 +9,4 @@ char telefone[9];
 
 //retorna string contendo protocolo e dados
 char* compor_msg();
+
