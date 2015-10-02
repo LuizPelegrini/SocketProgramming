@@ -5,7 +5,29 @@
 
 void processar_msg(char *msg)
 {
-	//extrair protocolo e dados referentes à funcionalidade desejada
+	//extrair protocolo e dados referentes à funcionalidade desejadavoid processar_msg(char *msg)
+	cmd = strtok(msg, " ");
+	nome = strtok(NULL, " ");
+	tel = strtok(NULL, " ");
+
+	if(!strcmp("STORE", cmd)){
+		func_atual = 0;
+	}else if(!strcmp("REMOVE", cmd)){
+		func_atual = 1;
+	}else if(!strcmp("GET", cmd)){
+		func_atual = 2;
+	}else if(!strcmp("END", cmd)){
+		func_atual = 3;
+	}else{
+		printf("command: not recognized")
+		exit(1);
+	}
+
+	reg_atual = (Registro*)malloc(sizeof(Registro));
+	strcpy(reg_atual->nome, nome);
+	strcpy(reg_atual->telefone, tel);
+
+	
 }
 
 
