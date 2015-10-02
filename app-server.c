@@ -49,30 +49,36 @@ int inserir()
 {
 	if(buscarNaLista(reg_atual....))	//é preciso alterar a função buscarNaLista para permitir comparação de strings
 		return 1;
-
 	inserirNaLista(listatelefonica,reg_atual);
 	return 0;
 }
 
-
+	
 //altera o telefone de um registro e o retorna
 Registro alterar()
 {
-	return NULL;
+	Registro* r = (Registro *) buscarNaLista(reg_atual->nome);
+	strcpy(r->telefone,reg_atual->telefone);
+	return r;
 }
 
 
 //remove registro da lista e retorna sucesso ou fracasso se não encontrado
 int remover()
 {
-  return 0;
+	Registro* r = (Registro *) buscarNaLista(reg_atual->nome);
+	if(r == NULL)
+		return 0;
+		
+	removerUmDaLista(r->nome);
+  	return 1;
 }
 
 
 //busca pelo nome
 Registro buscar()
 {
-  return NULL;
+	return (Registro *) buscarNaLista(reg_atual->nome);
 }
 
 
