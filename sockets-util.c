@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
 
 // handles errors, and PRINT them
 void net_error(const char *msg, const int status)
@@ -19,7 +20,7 @@ void net_error(const char *msg, const int status)
 void get_input(const int argc, const char *argv[], char **first, char **second)
 {
 	
-	printf("%s = %d\n", argv[1], strlen(argv[1]));
+	printf("%s = %ld\n", argv[1], strlen(argv[1]));
 	if (argc < 2 || argc > 3)
 	{
 		fprintf(stderr, "Invalid call!\n");
@@ -81,4 +82,39 @@ int create_socket(struct addrinfo *addrinfo, int (*function)(int, const struct s
 
 	free(addrinfo);
 	return sock;
+}
+
+size_t send_all(int socket, const char *msg)
+{
+	int total_sent = 0; // quantity of bytes already sent
+	int sent = 0;
+	size_t msg_len = strlen(msg);
+	size_t piece_len = msg_len;
+	// char *aux = msg;
+	while (total_sent < msg_len){
+		// aux += total_sent;
+		sent = send(socket, msg + total_sent, piece_len, 0);
+		total_sent += sent;
+		piece_len -= sent;
+	}
+	return total_sent;
+}
+
+size_t recv_all(int socket, char **buffer, const size_t buf_size)
+{
+	size_t by_recv = 1;// quatity of bytes already received
+	size_t count = 0;// total of bytes received in the end
+	*buffer = (char*) malloc(sizeof(char) * buf_size);
+	while(by_recv > 0 && count < buf_size){
+		by_recv = recv(socket, *buffer, buf_size, 0);
+		if(by_recv == 0 || by_recv == -1)
+			break;
+		count += by_recv;
+		/*printf("\n** Value received from recv() = %d\n", by_recv);
+		printf("** Total bytes recv = %d\n\n\n", count);
+		printf("%s\n", *buffer);*/
+		if(strstr(*buffer, "\r\n\r\n"))
+			break;
+	}
+	return count;
 }

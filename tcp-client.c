@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include "sockets-util.h"
 
-#define BUFFER 1000000
+#define BUFFER 100000
 
 
 int main(int argc, char const *argv[])
@@ -26,37 +26,19 @@ int main(int argc, char const *argv[])
 /* PROTOTIPO de como ENVIA mensagens */
 	char msg[BUFFER];
 	strcat(msg, "GET /index.html HTTP/1.1\r\nHost: ");
-	strcat(msg, argv[IP]);
+	strcat(msg, ip);
 	strcat(msg, "\r\n\r\n");
 	printf("\n*MESSAGE* (http)\n%s\n", msg );
 
-	int by_sent = 0; // quantity of bytes already sent
-	int msg_len = strlen(msg);
-	char *aux = msg;
-	while (by_sent < msg_len){
-		aux = aux + by_sent;
-		by_sent = send(sock, aux, msg_len, 0);
-		printf("bytes sent = %d\n", by_sent);
-	}
+	send_all(sock, msg);
 
 /* PROTOTIPO de como RECEBE mensagens */
 	// int recv(int sockfd, void *buf, int len, int flags);
-	int by_recv = 1;// quatity of bytes already received
-	char buff[BUFFER];
-	int count = 0;// total of bytes received in the end
-	while(by_recv > 0 && count < BUFFER){
-		by_recv = recv(sock, &buff, BUFFER, 0);
-		if(by_recv == 0 || by_recv == -1)
-			break;
-		count += by_recv;
-		printf("\n** Value received from recv() = %d\n", by_recv);
-		printf("** Total bytes recv = %d\n\n\n", count);
-		printf("%s\n", buff);
-		if(strstr(buff, "\r\n\r\n"))
-			break;
-	}
+	char *buff;
+	size_t by_recv;
+	by_recv = recv_all(sock, &buff, BUFFER);
 
 
-	printf("\n\nMessage has ended; received %d bytes!\n", count);
+	printf("\n\nMessage has ended; received %ld bytes!\n", by_recv);
 	return 0;
 }

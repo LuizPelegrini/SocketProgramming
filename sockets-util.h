@@ -35,4 +35,11 @@ struct addrinfo* create_addrinfo(const int socktype, const char *ip, const char 
 */
 int create_socket(struct addrinfo *addrinfo, int (*function)(int, const struct sockaddr* , socklen_t));
 
+
+size_t send_all(int socket, const char *msg);
+
+
+size_t recv_all(int socket, char **buffer, const size_t buf_size);
+
+
 #endif

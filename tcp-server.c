@@ -4,6 +4,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
+
 #include "sockets-util.h"
 
 
@@ -29,7 +31,7 @@ int main(int argc, char const *argv[])
 	int new_sock;
 	struct sockaddr_storage client_addr;
 	socklen_t c_addr_len;
-	addr_len = sizeof(struct sockaddr_storage);
+	c_addr_len = sizeof(struct sockaddr_storage);
 	int status;
 	while(1){
 		status = listen(sock, QUEUE_SIZE);
