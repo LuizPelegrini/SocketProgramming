@@ -7,6 +7,11 @@
 #define MY_PORT "42420"
 #endif
 
+#ifndef BUF_SIZE
+#define BUF_SIZE 100000
+#endif
+
+
 /*
 	net_error = verifica se ocorreu erro em alguma funcao associada a sockets.
 	------------------------------------------------------------------

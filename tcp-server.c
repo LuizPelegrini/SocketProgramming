@@ -23,25 +23,25 @@ int main(int argc, char const *argv[])
 	struct addrinfo *serv_info;
 	serv_info = create_addrinfo(SOCK_STREAM, NULL, port);
  
-	int sock;
-	sock = create_socket(serv_info, &bind);
+	int listen_sock;
+	listen_sock = create_socket(serv_info, &bind);
 	
 // LISTEN
 	//int listen(int sockfd, int backlog);
-	int new_sock;
+	int client_sock;
 	struct sockaddr_storage client_addr;
 	socklen_t c_addr_len;
 	c_addr_len = sizeof(struct sockaddr_storage);
 	int status;
 	while(1){
-		status = listen(sock, QUEUE_SIZE);
+		status = listen(listen_sock, QUEUE_SIZE);
 		if (status == -1)
 		{
 			printf("Erro no listen!\n");
 			exit(1);
 		}
-		new_sock = accept(sock,(struct sockaddr *)&client_addr, &c_addr_len);
-		if(new_sock == -1){
+		client_sock = accept(listen_sock,(struct sockaddr *)&client_addr, &c_addr_len);
+		if(client_sock == -1){
 			printf("Erro no Accept!\n");
 			exit(1);
 		}
@@ -53,15 +53,19 @@ int main(int argc, char const *argv[])
 			*/
 			break;
 		}
-		close(new_sock);
+		close(client_sock);
 	}
 
 /* Everything that goes here is only used by the child process */
 
 
 	// RECEIVES
-
+	char *request;
+	recv_all(client_sock, &request, BUF_SIZE);
+	printf("%s\n", request);
+	//handle_request(request, )
 	// SENDS
 
+	send_all(client_sock, "Blablabbab");
 
 }

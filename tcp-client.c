@@ -6,7 +6,6 @@
 #include <stdio.h>
 #include "sockets-util.h"
 
-#define BUFFER 100000
 
 
 int main(int argc, char const *argv[])
@@ -24,11 +23,11 @@ int main(int argc, char const *argv[])
 	
 
 /* PROTOTIPO de como ENVIA mensagens */
-	char msg[BUFFER];
+	char msg[BUF_SIZE];
 	strcat(msg, "GET /index.html HTTP/1.1\r\nHost: ");
 	strcat(msg, ip);
 	strcat(msg, "\r\n\r\n");
-	printf("\n*MESSAGE* (http)\n%s\n", msg );
+	print_request(msg);
 
 	send_all(sock, msg);
 
@@ -36,9 +35,8 @@ int main(int argc, char const *argv[])
 	// int recv(int sockfd, void *buf, int len, int flags);
 	char *buff;
 	size_t by_recv;
-	by_recv = recv_all(sock, &buff, BUFFER);
+	by_recv = recv_all(sock, &buff, BUF_SIZE);
 
-
-	printf("\n\nMessage has ended; received %ld bytes!\n", by_recv);
+	print_response(buff);
 	return 0;
 }

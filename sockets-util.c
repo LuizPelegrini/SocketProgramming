@@ -6,6 +6,28 @@
 #include <stdio.h>
 #include <unistd.h>
 
+/*// get sockaddr, IPv4 or IPv6:
+void *get_in_addr(struct sockaddr *sa)
+{
+	if (sa->sa_family == AF_INET) {
+		return &(((struct sockaddr_in*)sa)->sin_addr);
+	}
+	return &(((struct sockaddr_in6*)sa)->sin6_addr);
+}*/
+
+
+void print_request(const char *request)
+{
+	printf("\n\n\t*REQUEST*\n%s\n", request);
+	printf("\nRequest has ended; %ld bytes!\n", strlen(request));
+}
+
+void print_response(const char *response)
+{
+	printf("\n\n\t*RESPONSE*\n%s\n", response);
+	printf("\nResponse has ended; %ld bytes!\n", strlen(response));
+}
+
 // handles errors, and PRINT them
 void net_error(const char *msg, const int status)
 {
@@ -15,6 +37,7 @@ void net_error(const char *msg, const int status)
 	}
 	return;
 }
+
 
 
 void get_input(const int argc, const char *argv[], char **first, char **second)
@@ -35,6 +58,7 @@ void get_input(const int argc, const char *argv[], char **first, char **second)
 
 	*first = (char*) malloc(strlen(argv[1]) * sizeof(char));
 	strcpy(*first, argv[1]);
+	printf("get_input() succeed!\n");
 }
 
 
@@ -53,6 +77,7 @@ struct addrinfo* create_addrinfo(int socktype, const char *ip, const char *port)
 	status = getaddrinfo(ip, port, &hints, &info);
 	net_error("GETADDRINFO", status);
 
+	printf("create_addrinfo() succeed!\n");
 	return info;
 }
 
@@ -97,6 +122,7 @@ size_t send_all(int socket, const char *msg)
 		total_sent += sent;
 		piece_len -= sent;
 	}
+	printf("send_all() succeed!\n");
 	return total_sent;
 }
 
@@ -116,5 +142,6 @@ size_t recv_all(int socket, char **buffer, const size_t buf_size)
 		if(strstr(*buffer, "\r\n\r\n"))
 			break;
 	}
+	printf("recv_all() succeed!\n");
 	return count;
 }
