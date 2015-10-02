@@ -14,7 +14,7 @@ int func_atual;		//funcionalidade a ser executada
 struct registro
 {
 	char nome[55];	//chave do registro
-	char telefone[8];
+	char telefone[9];
 };
 typedef struct registro Registro;
 
