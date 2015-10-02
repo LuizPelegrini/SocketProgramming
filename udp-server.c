@@ -6,11 +6,20 @@
 #include <stdio.h>
 #include <unistd.h>
 
-
 #include "sockets-util.h"
 
 
 #define QUEUE_SIZE 20
+
+// get sockaddr, IPv4 or IPv6:
+void *get_in_addr(struct sockaddr *sa)
+{
+    if (sa->sa_family == AF_INET) {
+        return &(((struct sockaddr_in*)sa)->sin_addr);
+    }
+
+    return &(((struct sockaddr_in6*)sa)->sin6_addr);
+}
 
 
 
@@ -21,48 +30,35 @@ int main(int argc, char const *argv[])
 	printf("Path = %s\n", path);
 	printf("Port = %s\n", port);
 
-	struct addrinfo *serv_info;
-	serv_info = create_addrinfo(SOCK_DGRAM, NULL, port);
- 
-	int sock;
-	sock = create_socket(serv_info, &bind);
+	char s[INET6_ADDRSTRLEN];
+
+	int client_sock;
+	client_sock = create_socket(SOCK_DGRAM, NULL);
 	
-// LISTEN
-	//int listen(int sockfd, int backlog);
-	int new_sock;
+
 	struct sockaddr_storage client_addr;
 	socklen_t c_addr_len;
 	c_addr_len = sizeof(struct sockaddr_storage);
 	int status;
+	char request[BUF_SIZE];
 	while(1){
-		status = listen(sock, QUEUE_SIZE);
-		if (status == -1)
-		{
-			printf("Erro no listen!\n");
+		if(recvfrom(client_sock, &request, BUF_SIZE-1 , 0,
+					(struct sockaddr *)&client_addr, &c_addr_len) == -1) {
+			perror("recvfrom error");
 			exit(1);
 		}
-		new_sock = accept(sock,(struct sockaddr *)&client_addr, &c_addr_len);
-		if(new_sock == -1){
-			printf("Erro no Accept!\n");
+		print_request(request);
+		printf("c_addr_len = %d\n",  c_addr_len);
+
+		char response[] = "Testando";
+		//get_addr_in()
+		if(sendto(client_sock, response, sizeof(response), 0,
+				(struct sockaddr*)&client_addr, c_addr_len) == -1){
+			perror("sento error");
 			exit(1);
 		}
-		if(!fork()){// is the child process
-			/*
-			cada processo filho do servidor vai tratar de um cliente. Isso
-			garante que o servidor possa atender novas conexoes, enquanto
-			os seus filhos tratam de cada cliente.
-			*/
-			break;
-		}
-		close(new_sock);
+		print_response(response);
+
 	}
-
-/* Everything that goes here is only used by the child process */
-
-
-	// RECEIVES
-
-	// SENDS
-
 
 }

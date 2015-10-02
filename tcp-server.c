@@ -19,14 +19,13 @@ int main(int argc, char const *argv[])
 	get_input(argc, argv, &path, &port);
 	printf("Path = %s\n", path);
 	printf("Port = %s\n", port);
-
-	struct addrinfo *serv_info;
-	serv_info = create_addrinfo(SOCK_STREAM, NULL, port);
  
-	int listen_sock;
-	listen_sock = create_socket(serv_info, &bind);
+	int client_sock;
 	
-// LISTEN
+	while(1){
+	client_sock = create_socket(SOCK_STREAM, NULL);
+	
+/*// LISTEN
 	//int listen(int sockfd, int backlog);
 	int client_sock;
 	struct sockaddr_storage client_addr;
@@ -50,11 +49,11 @@ int main(int argc, char const *argv[])
 			cada processo filho do servidor vai tratar de um cliente. Isso
 			garante que o servidor possa atender novas conexoes, enquanto
 			os seus filhos tratam de cada cliente.
-			*/
+			
 			break;
 		}
 		close(client_sock);
-	}
+	}*/
 
 /* Everything that goes here is only used by the child process */
 
@@ -67,5 +66,6 @@ int main(int argc, char const *argv[])
 	// SENDS
 
 	send_all(client_sock, "Blablabbab");
-
+	close(client_sock);
+}
 }

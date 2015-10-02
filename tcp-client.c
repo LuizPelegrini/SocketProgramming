@@ -14,12 +14,9 @@ int main(int argc, char const *argv[])
 	get_input(argc, argv, &ip, &port);
 	printf("IP = %s\n", ip);
 	printf("Port = %s\n", port);
-
-	struct addrinfo *serv_info;
-	serv_info = create_addrinfo(SOCK_STREAM, ip, port);
  
 	int sock;
-	sock = create_socket(serv_info, &connect);
+	sock = create_socket(SOCK_STREAM, ip);
 	
 
 /* PROTOTIPO de como ENVIA mensagens */

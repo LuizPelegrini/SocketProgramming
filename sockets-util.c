@@ -63,7 +63,7 @@ void get_input(const int argc, const char *argv[], char **first, char **second)
 
 
 
-struct addrinfo* create_addrinfo(int socktype, const char *ip, const char *port)
+struct addrinfo* _create_addrinfo(int socktype, const char *ip, const char *port)
 {
 	struct addrinfo hints;
 	// prepares the struct adrrinfo
@@ -82,7 +82,7 @@ struct addrinfo* create_addrinfo(int socktype, const char *ip, const char *port)
 }
 
 // go through every server addrinfo and tries to create a socket, then tries to make a connection or a binding
-int create_socket(struct addrinfo *addrinfo, int (*function)(int, const struct sockaddr* , socklen_t))
+int _socket(struct addrinfo *addrinfo, int (*function)(int, const struct sockaddr* , socklen_t))
 {
 	struct addrinfo *ai;
 	int sock;
@@ -107,6 +107,46 @@ int create_socket(struct addrinfo *addrinfo, int (*function)(int, const struct s
 
 	free(addrinfo);
 	return sock;
+}
+
+int create_socket(int sock_type, const char *ip)
+{
+	int sock;
+	struct addrinfo *ai;
+	ai = _create_addrinfo(sock_type, ip, MY_PORT);
+
+	static int listen_sock = 0;
+
+	if (ip == NULL && sock_type == SOCK_STREAM){
+		// é um server e ta usando TCP
+		int client_sock;
+		struct sockaddr_storage client_addr;
+		socklen_t c_addr_len;
+		int status;
+
+		if (!listen_sock){
+			listen_sock = _socket(ai, &bind);
+		}
+		c_addr_len = sizeof(struct sockaddr_storage);
+		status = listen(listen_sock, QUEUE_SIZE);
+		if (status == -1)
+		{
+			printf("Erro no listen!\n");
+			exit(1);
+		}
+		client_sock = accept(listen_sock,(struct sockaddr *)&client_addr, &c_addr_len);
+		if(client_sock == -1){
+			printf("Erro no Accept!\n");
+			exit(1);
+		}
+		return client_sock;
+	}
+	else if (ip == NULL){
+		return _socket(ai, &bind);
+	}
+	else{
+		return _socket(ai, &connect);
+	} 
 }
 
 size_t send_all(int socket, const char *msg)
