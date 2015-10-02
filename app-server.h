@@ -24,7 +24,8 @@ typedef struct registro Registro;
 void processa_msg(char *msg);
 
 
-//insere registro válido na lista sem garantia de que não há repetição
+//tenta inserir registro válido na lista
+//retorna 1 se registro já existe
 int inserir(Registro r);
 
 
